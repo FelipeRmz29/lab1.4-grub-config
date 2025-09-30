@@ -1,0 +1,29 @@
+# =========================================================
+# Comando de Recuperación de GRUB (Simulando Live CD/USB)
+# Partición ROOT: /dev/sda1
+# Disco Principal: /dev/sda
+# =========================================================
+
+# 1. Montar el sistema de archivos raíz (ROOT) en el punto /mnt
+sudo mount /dev/sda1 /mnt
+
+# 2. Vincular los directorios esenciales del entorno de rescate al sistema montado
+for i in /dev /dev/pts /proc /sys /run; do sudo mount -B $i /mnt$i; done
+
+# 3. Acceder al sistema montado con 'chroot' (Change Root)
+sudo chroot /mnt
+
+# 4. Reinstalar el cargador de arranque GRUB en el disco principal
+grub-install /dev/sda
+
+# 5. Actualizar la configuración de GRUB dentro del sistema operativo
+update-grub
+
+# 6. Salir del entorno chroot
+exit
+
+# 7. Desmontar los directorios y la partición raíz (una vez reiniciado el equipo)
+sudo umount -R /mnt
+
+# 8. Reiniciar el sistema
+reboot
